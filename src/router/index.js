@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import PageHome from '@/pages/PageHome'
-import PageThreadShow from '@/pages/PageThreadShow'
+import Home from '@/pages/PageHome'
+import ThreadShow from '@/pages/PageThreadShow'
 import PageNotFound from '@/pages/PageNotFound'
 import Forum from '@/pages/PageForum'
+import Profile from '@/pages/PageProfile'
 import Category from '@/pages/PageCategory'
 
 Vue.use(Router)
@@ -12,8 +13,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'PageHome',
-      component: PageHome
+      name: 'Home',
+      component: Home
     },
     {
       path: '/forum/:id',
@@ -28,9 +29,21 @@ export default new Router({
       props: true
     },
     {
+      path: '/me',
+      name: 'Profile',
+      component: Profile,
+      props: true
+    },
+    {
+      path: '/me/edit',
+      name: 'ProfileEdit',
+      component: Profile,
+      props: {edit: true}
+    },
+    {
       path: '/thread/:id',
       name: 'PageThreadShow',
-      component: PageThreadShow,
+      component: ThreadShow,
       props: true
     },
     {

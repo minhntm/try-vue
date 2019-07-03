@@ -10,7 +10,6 @@
 
 <script>
 import CategoryListItem from './CategoryListItem'
-import sourceDate from '@/data.json'
 export default {
   components: {
     CategoryListItem
