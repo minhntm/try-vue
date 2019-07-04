@@ -8,6 +8,9 @@
         {{repliesCount}} replies by {{usersCount}} contributors
       </span>
     </p>
+    <router-link :to="{name:'ThreadEdit', params: {id: thread['.key']}}">
+      Edit
+    </router-link>
     <PostList :posts="posts"/>
     <PostEditor
       :threadId="id"

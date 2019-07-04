@@ -34,7 +34,7 @@ export default {
     save () {
       const post = {
         text: this.text,
-        threadId: this.threadId,
+        threadId: this.threadId
       }
       this.text = ''
 
