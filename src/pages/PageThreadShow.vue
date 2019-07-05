@@ -2,10 +2,10 @@
   <div class="col-large push-top">
     <h1>{{thread.title}}</h1>
     <p>
-      By <a href="#" class="link-unstyled">Robin</a>,
+      By <a href="#" class="link-unstyled">{{user.name}}</a>,
       <AppDate :timestamp="thread.publishedAt"/>
       <span style="float:right; margin-top: 2px;" class="hide-mobile text-faded text-small">
-        {{repliesCount}} replies by {{usersCount}} contributors
+        {{repliesCount}} replies by {{contributorsCount}} contributors
       </span>
     </p>
     <router-link :to="{name:'ThreadEdit', params: {id: thread['.key']}}">
@@ -45,12 +45,16 @@ export default {
         .filter(post => postIds.includes(post['.key']))
     },
     repliesCount () {
-      return this.posts.length
+      return this.posts.length - 1
     },
-    usersCount () {
+    contributorsCount () {
       const userIds = this.posts.map(post => post.userId)
-      return Object.keys(this.$store.state.users)
-        .filter(userId => userIds.includes(userId)).length
+      return userIds
+        .filter((item, index) => index === userIds.indexOf(item))
+        .length - 1
+    },
+    user () {
+      return this.$store.state.users[this.thread.userId]
     }
   }
 }
