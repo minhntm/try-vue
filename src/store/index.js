@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import sourceData from '@/data.json'
+import firebase from 'firebase'
 import { countObjectProperties } from '@/utils'
 
 Vue.use(Vuex)
@@ -17,13 +17,18 @@ const appendChildToParentMutation = ({childName, parentName}) => {
 
 export default new Vuex.Store({
   state: {
-    ...sourceData,
+    categories: {},
+    forums: {},
+    threads: {},
+    posts: {},
+    users: {},
     authId: '7uVPJS9GHoftN58Z2MXCYDqmNAh2'
   },
 
   getters: {
     authUser (state) {
-      return state.users[state.authId]
+      // return state.users[state.authId]
+      return {}
     },
 
     userPostsCount: state => userId => countObjectProperties(state.users[userId].posts),
@@ -106,6 +111,47 @@ export default new Vuex.Store({
 
     updateUser ({commit}, user) {
       commit('setUser', {userId: user['.key'], user: { ...user }})
+    },
+
+    fetchResource ({state, commit}, {resourceName, id}) {
+      return new Promise((resolve, reject) => {
+        firebase.database().ref(resourceName).child(id).once('value', snapshot => {
+          commit('setResource', {
+            id: snapshot.key,
+            resource: snapshot.val(),
+            resourceName: resourceName
+          })
+          resolve(state[resourceName][id])
+        })
+      })
+    },
+
+    fetchThread ({dispatch}, {id}) {
+      return dispatch('fetchResource', {resourceName: 'threads', id: id})
+    },
+
+    fetchUser ({dispatch}, {id}) {
+      return dispatch('fetchResource', {resourceName: 'users', id: id})
+    },
+
+    fetchPost ({dispatch}, {id}) {
+      return dispatch('fetchResource', {resourceName: 'posts', id: id})
+    },
+
+    fetchResources ({dispatch}, {resourceName, ids}) {
+      return Promise.all(ids.map(id => dispatch('fetchResource', {resourceName, id})))
+    },
+
+    fetchPosts ({dispatch}, {ids}) {
+      return dispatch('fetchResources', {resourceName: 'posts', ids})
+    },
+
+    fetchUsers ({dispatch}, {ids}) {
+      return dispatch('fetchResources', {resourceName: 'users', ids})
+    },
+
+    fetchThreads ({dispatch}, {ids}) {
+      return dispatch('fetchResources', {resourceName: 'threads', ids})
     }
   },
 
@@ -120,6 +166,11 @@ export default new Vuex.Store({
 
     setUser (state, {user, userId}) {
       Vue.set(state.users, userId, user)
+    },
+
+    setResource (state, {resource, id, resourceName}) {
+      resource['.key'] = id
+      Vue.set(state[resourceName], id, resource)
     },
 
     appendPostToThread: appendChildToParentMutation({

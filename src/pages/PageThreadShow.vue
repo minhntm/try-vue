@@ -1,5 +1,5 @@
 <template>
-  <div class="col-large push-top">
+  <div v-if="thread && user" class="col-large push-top">
     <h1>{{thread.title}}</h1>
     <p>
       By <a href="#" class="link-unstyled">{{user.name}}</a>,
@@ -21,6 +21,7 @@
 <script>
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
+import {countObjectProperties} from '@/utils'
 
 export default {
   components: {
@@ -48,14 +49,24 @@ export default {
       return this.posts.length - 1
     },
     contributorsCount () {
-      const userIds = this.posts.map(post => post.userId)
-      return userIds
-        .filter((item, index) => index === userIds.indexOf(item))
-        .length - 1
+      return countObjectProperties(this.thread.contributors)
     },
     user () {
       return this.$store.state.users[this.thread.userId]
     }
+  },
+
+  created () {
+    this.$store.dispatch('fetchThread', {id: this.id})
+      .then(thread => {
+        this.$store.dispatch('fetchUser', {id: thread.userId})
+        this.$store.dispatch('fetchPosts', {ids: Object.keys(thread.posts)})
+          .then(posts => {
+            posts.forEach(post => {
+              this.$store.dispatch('fetchUser', {id: post.userId})
+            })
+          })
+      })
   }
 }
 </script>
