@@ -58,6 +58,7 @@ export default {
     save () {
       (this.isUpdate ? this.update() : this.create())
         .then(post => {
+          // only for update
           this.$emit('save', {post})
         })
     },
