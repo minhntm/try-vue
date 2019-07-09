@@ -138,7 +138,16 @@ export default new Vuex.Store({
       return dispatch('fetchResource', {resourceName: 'posts', id: id})
     },
 
+    fetchCategory ({dispatch}, {id}) {
+      return dispatch('fetchResource', {resourceName: 'categories', id: id})
+    },
+
+    fetchForum ({dispatch}, {id}) {
+      return dispatch('fetchResource', {resourceName: 'forums', id: id})
+    },
+
     fetchResources ({dispatch}, {resourceName, ids}) {
+      ids = Array.isArray(ids) ? ids : Object.keys(ids)
       return Promise.all(ids.map(id => dispatch('fetchResource', {resourceName, id})))
     },
 
