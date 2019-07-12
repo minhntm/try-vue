@@ -14,45 +14,42 @@
     </div>
 
     <nav class="navbar">
-      <ul>
-        <!-- <li class="navbar-item">
-          <a href="#">Home</a>
-        </li>
-        <li class="navbar-item">
-          <a href="#">Category</a>
-        </li>
-        <li class="navbar-item">
-          <a href="#">Forum</a>
-        </li>
-        <li class="navbar-item">
-          <a href="#">Thread</a>
-        </li>
-        <li class="navbar-item">
-          <a href="#">My Profile</a>
-        </li>
-        <li class="navbar-item">
-          <a href="#">Logout</a>
-        </li> -->
-
-        <li class="navbar-user" v-if="user">
-          <router-link :to="{name: 'Profile'}">
+      <ul v-if="user">
+        <li class="navbar-user">
+          <a @click.prevent="userDropdownOpen = !userDropdownOpen">
             <img class="avatar-small" :src="user.avatar"
                  alt="">
             <span>
                 {{user.name}}
                 <img class="icon-profile" src="../assets/img/arrow-profile.svg" alt="">
             </span>
-          </router-link>
+          </a>
 
           <!-- dropdown menu -->
           <!-- add class "active-drop" to show the dropdown -->
-          <div id="user-dropdown">
+          <div id="user-dropdown" :class="{'active-drop': userDropdownOpen}">
             <div class="triangle-drop"></div>
             <ul class="dropdown-menu">
-              <li class="dropdown-menu-item"><a href="profile.html">View profile</a></li>
-              <li class="dropdown-menu-item"><a href="#">Log out</a></li>
+              <li class="dropdown-menu-item">
+                <router-link :to="{name: 'Profile'}">
+                  View Profile
+                </router-link>
+              </li>
+              <li class="dropdown-menu-item">
+                <a @click.prevent="$store.dispatch('signOut')">Sign Out</a>
+              </li>
             </ul>
           </div>
+        </li>
+
+      </ul>
+
+      <ul v-else>
+        <li class="navbar-item">
+          <router-link :to="{name: 'SignIn'}">Sign In</router-link>
+        </li>
+        <li class="navbar-item">
+          <router-link :to="{name: 'Register'}">Register</router-link>
         </li>
       </ul>
     </nav>
@@ -62,6 +59,12 @@
 <script>
 import {mapGetters} from 'vuex'
 export default {
+  data () {
+    return {
+      userDropdownOpen: true
+    }
+  },
+
   computed: {
     ...mapGetters({
       'user': 'authUser'
