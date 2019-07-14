@@ -4,6 +4,7 @@
     <h1>Editing <i>{{title}}</i></h1>
 
     <ThreadEditor
+      ref="editor"
       :title="title"
       :text="text"
       @save="save"
@@ -20,6 +21,12 @@ import asyncDataStatus from '@/mixins/asyncDataStatus'
 export default {
   components: {
     ThreadEditor
+  },
+
+  data () {
+    return {
+      saved: false
+    }
   },
 
   mixins: [asyncDataStatus],
@@ -43,6 +50,10 @@ export default {
     text () {
       const post = this.$store.state.posts[this.thread.firstPostId]
       return post ? post.text : null
+    },
+
+    hasUnsavedChange () {
+      return (this.$refs.editor.form.title || this.$refs.editor.form.text) && !this.saved
     }
   },
 
@@ -55,6 +66,7 @@ export default {
         text,
         title
       }).then(thread => {
+        this.saved = true
         this.$router.push({name: 'ThreadShow', params: {id: this.id}})
       })
     },
@@ -68,6 +80,19 @@ export default {
     this.fetchThread({id: this.id})
       .then(thread => this.fetchPost({id: thread.firstPostId}))
       .then(() => this.asyncDataStatus_fetched())
+  },
+
+  beforeRouteLeave (to, from, next) {
+    if (this.hasUnsavedChange) {
+      const confirmed = window.confirm('Are you sure you want to leave? Unsaved changes will be lost.')
+      if (confirmed) {
+        next()
+      } else {
+        next(false)
+      }
+    } else {
+      next()
+    }
   }
 }
 </script>

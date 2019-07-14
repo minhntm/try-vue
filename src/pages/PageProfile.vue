@@ -28,7 +28,6 @@ import UserProfileCard from '@/components/UserProfileCard'
 import UserProfileCardEditor from '@/components/UserProfileCardEditor'
 import PostList from '@/components/PostList'
 import {mapGetters} from 'vuex'
-// import asyncDataStatus from '@/mixins/asyncDataStatus'
 
 export default {
   components: {
@@ -36,8 +35,6 @@ export default {
     UserProfileCardEditor,
     PostList
   },
-
-  // mixins: [asyncDataStatus],
 
   props: {
     edit: {

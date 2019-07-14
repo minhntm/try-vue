@@ -61,22 +61,20 @@ export default {
 
     register () {
       this.registerUserWithEmailAndPassword(this.form)
-        .then(() => this.$router.push('/'))
+        .then(() => this.$router.push({name: 'Home'}))
     },
 
     registerWithGoogle () {
       this.signInWithGoogle()
-        .then(() => this.$router.push('/'))
+        .then(() => this.$router.push({name: 'Home'}))
     }
   },
 
   created () {
     this.$emit('ready')
   }
-
 }
 </script>
 
 <style>
-
 </style>

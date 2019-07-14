@@ -49,13 +49,13 @@ export default {
         email: this.form.email,
         password: this.form.password
       })
-        .then(() => this.$router.push('/'))
+        .then(() => this.$router.push({name: 'Home'}))
         .catch(err => alert(err.message))
     },
 
     signInWithGoogle () {
       this.$store.dispatch('signInWithGoogle')
-        .then(() => this.$router.push('/'))
+        .then(() => this.$router.push({name: 'Home'}))
         .catch(err => alert(err.message))
     }
   },

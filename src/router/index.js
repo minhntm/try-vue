@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '@/store'
 import Router from 'vue-router'
 import Home from '@/pages/PageHome'
 import ThreadShow from '@/pages/PageThreadShow'
@@ -13,7 +14,7 @@ import Category from '@/pages/PageCategory'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
@@ -36,7 +37,8 @@ export default new Router({
       path: '/me',
       name: 'Profile',
       component: Profile,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/register',
@@ -49,6 +51,14 @@ export default new Router({
       component: SignIn
     },
     {
+      path: '/signout',
+      name: 'SignOut',
+      beforeEnter: (to, from, next) => {
+        store.dispatch('signOut')
+          .then(() => next({name: 'Home'}))
+      }
+    },
+    {
       path: '/me/edit',
       name: 'ProfileEdit',
       component: Profile,
@@ -58,7 +68,8 @@ export default new Router({
       path: '/thread/create/:forumId',
       name: 'ThreadCreate',
       component: ThreadCreate,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '/thread/:id',
@@ -70,7 +81,8 @@ export default new Router({
       path: '/thread/:id/edit',
       name: 'ThreadEdit',
       component: ThreadEdit,
-      props: true
+      props: true,
+      meta: {requiresAuth: true}
     },
     {
       path: '*',
@@ -81,3 +93,20 @@ export default new Router({
   ],
   mode: 'history'
 })
+
+router.beforeEach((to, from, next) => {
+  store.dispatch('initAuthentication')
+    .then(user => {
+      if (to.matched.some(route => route.meta.requiresAuth)) {
+        if (user) {
+          next()
+        } else {
+          next({name: 'Home'})
+        }
+      } else {
+        next()
+      }
+    })
+})
+
+export default router

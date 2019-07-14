@@ -36,7 +36,7 @@
                 </router-link>
               </li>
               <li class="dropdown-menu-item">
-                <a @click.prevent="$store.dispatch('signOut')">Sign Out</a>
+                <router-link :to="{name: 'SignOut'}">Sign Out</router-link>
               </li>
             </ul>
           </div>
