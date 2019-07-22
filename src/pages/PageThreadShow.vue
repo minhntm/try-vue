@@ -11,15 +11,21 @@
     <router-link :to="{name:'ThreadEdit', params: {id: thread['.key']}}">
       Edit
     </router-link>
+    <router-link :to="{name: 'ThreadShow', params: {id: '-KvcwywxaxxIfsHR88wa'}}">adf</router-link>
     <PostList :posts="posts"/>
     <PostEditor
+      v-if="authUser"
       :threadId="id"
     />
+    <div v-else class="text-center" style="margin-bottom: 50px;">
+      <router-link :to="{name: 'SignIn', query: {redirectTo: $route.path}}">Sign in</router-link> or
+      <router-link :to="{name: 'Register'}">Register</router-link> to post a reply
+    </div>
   </div>
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import PostList from '@/components/PostList'
 import PostEditor from '@/components/PostEditor'
 import {countObjectProperties} from '@/utils'
@@ -57,7 +63,8 @@ export default {
     },
     user () {
       return this.$store.state.users[this.thread.userId]
-    }
+    },
+    ...mapGetters(['authUser'])
   },
 
   methods: {
@@ -65,6 +72,16 @@ export default {
   },
 
   created () {
+    this.fetchThread({id: this.id})
+      .then(thread => {
+        this.fetchUser({id: thread.userId})
+        return this.fetchPosts({ids: Object.keys(thread.posts)})
+      })
+      .then(posts => Promise.all(posts.map(post => this.fetchUser({id: post.userId}))))
+      .then(() => this.asyncDataStatus_fetched())
+  },
+
+  updated () {
     this.fetchThread({id: this.id})
       .then(thread => {
         this.fetchUser({id: thread.userId})
