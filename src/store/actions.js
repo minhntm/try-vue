@@ -9,7 +9,7 @@ export default {
           resource: snapshot.val(),
           resourceName: resourceName
         })
-        resolve(state[resourceName][id])
+        resolve(state[resourceName].items[id])
       })
     })
   },

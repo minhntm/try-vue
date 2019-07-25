@@ -48,11 +48,11 @@ export default {
 
   computed: {
     thread () {
-      return this.$store.state.threads[this.id]
+      return this.$store.state.threads.items[this.id]
     },
     posts () {
       const postIds = Object.values(this.thread.posts)
-      return Object.values(this.$store.state.posts)
+      return Object.values(this.$store.state.posts.items)
         .filter(post => postIds.includes(post['.key']))
     },
     repliesCount () {
@@ -62,13 +62,15 @@ export default {
       return countObjectProperties(this.thread.contributors)
     },
     user () {
-      return this.$store.state.users[this.thread.userId]
+      return this.$store.state.users.items[this.thread.userId]
     },
-    ...mapGetters(['authUser'])
+    ...mapGetters({authUser: 'auth/authUser'})
   },
 
   methods: {
-    ...mapActions(['fetchThread', 'fetchUser', 'fetchPosts'])
+    ...mapActions('threads', ['fetchThread']),
+    ...mapActions('users', ['fetchUser']),
+    ...mapActions('posts', ['fetchPosts'])
   },
 
   created () {

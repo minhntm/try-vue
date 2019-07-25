@@ -61,13 +61,13 @@ import {mapGetters} from 'vuex'
 export default {
   data () {
     return {
-      userDropdownOpen: true
+      userDropdownOpen: false
     }
   },
 
   computed: {
     ...mapGetters({
-      'user': 'authUser'
+      'user': 'auth/authUser'
     })
   }
 }

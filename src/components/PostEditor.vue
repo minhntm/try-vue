@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   props: {
     threadId: {
@@ -55,6 +56,7 @@ export default {
   },
 
   methods: {
+    ...mapActions('posts', ['createPost', 'updatePost']),
     save () {
       (this.isUpdate ? this.update() : this.create())
         .then(post => {
@@ -70,11 +72,11 @@ export default {
       }
       this.text = ''
 
-      return this.$store.dispatch('createPost', post)
+      return this.createPost(post)
     },
 
     update () {
-      return this.$store.dispatch('updatePost', {
+      return this.updatePost({
         id: this.post['.key'],
         text: this.text
       })

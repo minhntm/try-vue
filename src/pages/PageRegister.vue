@@ -57,7 +57,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['registerUserWithEmailAndPassword', 'signInWithGoogle']),
+    ...mapActions('auth', ['registerUserWithEmailAndPassword', 'signInWithGoogle']),
 
     register () {
       this.registerUserWithEmailAndPassword(this.form)

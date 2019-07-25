@@ -48,8 +48,8 @@ export default {
 
   computed: {
     ...mapGetters({
-      user: 'authUser',
-      getUserPosts: 'userPosts'
+      user: 'auth/authUser',
+      getUserPosts: 'users/userPosts'
     }),
     userPosts () {
       return this.getUserPosts(this.user['.key'])
@@ -57,12 +57,12 @@ export default {
   },
 
   created () {
-    this.$store.dispatch('fetchPosts', {ids: this.user.posts})
+    this.$store.dispatch('posts/fetchPosts', {ids: this.user.posts})
       .then(() => this.asyncDataStatus_fetched())
   },
 
   updated () {
-    this.$store.dispatch('fetchPosts', {ids: this.user.posts})
+    this.$store.dispatch('posts/fetchPosts', {ids: this.user.posts})
       .then(() => this.asyncDataStatus_fetched())
   }
 }
