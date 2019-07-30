@@ -11,7 +11,6 @@
     <router-link :to="{name:'ThreadEdit', params: {id: thread['.key']}}">
       Edit
     </router-link>
-    <router-link :to="{name: 'ThreadShow', params: {id: '-KvcwywxaxxIfsHR88wa'}}">adf</router-link>
     <PostList :posts="posts"/>
     <PostEditor
       v-if="authUser"
